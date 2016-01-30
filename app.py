@@ -5,21 +5,34 @@ register("HW8S7gMIafiQQszmJme2IS4Be7jFlRHnE0izdtLs", "D0lEeiwQ62X6POKXJ1RTxbHuDP
 
 from parse_rest.datatypes import Object
 
-class GameScore(Object): #Declare the class you want to access in the parse database
+from PIL import Image
+import urllib, cStringIO
+
+class ImageStorageDev(Object):
     pass
-gameScore = GameScore(score=1337, player_name='John Doe', cheat_mode=False)
-gameScore.cheat_mode = True
-gameScore.level = 20
-gameScore.save()
 
+#Get data from parse by objectId
+dataRow = ImageStorageDev.Query.get(objectId="uqA3Ycyqnq")
+#Get data column (image) for that record
+image = dataRow.image
+#Get image URL
+imageURL = image.url
+print imageURL
 
-gameScore = GameScore.Query.get(objectId="xxwXx9eOec")
+#Get image (We don't actually need the file, URL should be enough)
+#Get image from image URL
+#imageFile = cStringIO.StringIO(urllib.urlopen(imageURL).read())
+#pic = Image.open(imageFile)
+#pic.show()
+
 app = Flask(__name__)
-
-
 @app.route('/')
 def hello_world():
-    return 'Hello World!'
+    #pic = Image.open(image)
+    #image.show()
+    picTag = '<img src="' + imageURL + '" alt="' + imageURL + '">'
+    print picTag
+    return "Hello World" + picTag
 
 
 if __name__ == '__main__':
