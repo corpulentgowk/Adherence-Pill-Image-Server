@@ -34,7 +34,7 @@ def updateImages(result):
         print result[key]
         dataRow.pill = result[key]
         dataRow.save()
-        
+
 
 #Get image (We don't actually need the file, URL should be enough)
 #Get image from image URL
@@ -73,6 +73,32 @@ def getData():
         result = result + key + ":" + value + "\n"
     return result
 
+
+#Sample Request
+# r = requests.post('http://httpbin.org/post', files={'report.xls': open('report.xls', 'rb')})
+#r = requests.post('http://localhost:5000', files={'test.txt': open('test.txt', 'rb')})
+
+@app.route('/addModel/<param>', methods=['POST'])
+def insertModel(param):
+    param = str(param)
+    dat = ast.literal_eval(param)
+    dat = ast.literal_eval(dat)
+
+    if request.method == 'POST':
+        file = request.files['file']
+    class ModelStorage(Object):
+        pass
+    modelStorage = ModelStorage(patientID=dat['patientID'], model=file)
+
+    return "Successfully inserted model"
+
+
+@requires_auth
+def update_task(param):
+    param = str(param)
+    dat = ast.literal_eval(param)
+    dat = ast.literal_eval(dat)
+    cur.execute("select exists(select 1 from utiltrack where jobid='%s');" % (dat['jobid']))
 if __name__ == '__main__':
     #app.debug = True
     app.run()
