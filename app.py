@@ -7,6 +7,7 @@ register("HW8S7gMIafiQQszmJme2IS4Be7jFlRHnE0izdtLs", "D0lEeiwQ62X6POKXJ1RTxbHuDP
 import os
 from flask import Flask, request, redirect, url_for, jsonify
 from werkzeug import secure_filename
+import json,httplib
 
 UPLOAD_FOLDER = '/Users/Steven-PC/Desktop/'
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'bin'])
@@ -83,29 +84,44 @@ def getData():
 #Sample Request
 # r = requests.post('http://httpbin.org/post', files={'report.xls': open('report.xls', 'rb')})
 #r = requests.post('http://localhost:5000', files={'test.txt': open('test.txt', 'rb')})
-
-@app.route('/addModel/<param>', methods=['POST'])
-def insertModel(param):
-    param = str(param)
-    dat = ast.literal_eval(param)
+#r = requests.post('http://localhost:5000/addModel', files={'test.txt': open('test.txt', 'rb')})
+# r = requests.post("http://localhost:5000/addModel", files={'test.bin': open('test.bin', 'rb')})
+@app.route('/addModel', methods=['POST'])
+def insertModel():
 
     if request.method == 'POST':
-        file = request.files['test.bin']
-        filename = secure_filename(file.filename)
-        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        for filename, file in request.files.iteritems():
+            name = request.files[filename].name
+    file1 = request.files[name] #Grabs the file that was uploaded
 
-        #print str(file)
-    class ModelStorage(Object):
-        pass
+    connection = httplib.HTTPSConnection('api.parse.com', 443) #Will need to be changed later to wherever we offload parse api
+    connection.connect()
+    connection.request('POST', '/1/files/test.bin', file1.read(),
+                   {
+           "X-Parse-Application-Id": "HW8S7gMIafiQQszmJme2IS4Be7jFlRHnE0izdtLs",
+           "X-Parse-REST-API-Key": "D0lEeiwQ62X6POKXJ1RTxbHuDPX91aUvditAIjxC",
+           "Content-Type": "application/octet-stream"
+         })
 
-    with open("/Users/Steven-PC/Desktop/Rplots.pdf", 'rb').read() as f:
-        modelStorage = ModelStorage(patientID=dat['patientID'], model=f)
-        temp = str(f)
+    res = connection.getresponse().read()
+    res = str(res)
+    res = ast.literal_eval(res) #converts the response into a JSON so we can index it by strings
+    # res["name"] #Grab the link that parse stored in the files class so we can associate the file with ModelStorage
 
-        print(f)
-        modelStorage.save()
+    connection.request('POST', '/1/classes/ModelStorage', json.dumps({
+       "model": {
+         "name": res["name"],
+         "__type": "File"
+       }
+     }), {
+       "X-Parse-Application-Id": "HW8S7gMIafiQQszmJme2IS4Be7jFlRHnE0izdtLs",
+       "X-Parse-REST-API-Key": "D0lEeiwQ62X6POKXJ1RTxbHuDPX91aUvditAIjxC",
+       "Content-Type": "application/json"
+     })
+    result = json.loads(connection.getresponse().read())
+    print result
+
     return "Successfully inserted model"
-
 if __name__ == '__main__':
     #app.debug = True
     app.run(debug = 'True')

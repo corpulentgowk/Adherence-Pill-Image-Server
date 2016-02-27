@@ -1,7 +1,8 @@
 import ast
 from parse_rest.connection import register #Connects to the PArse Database. Format: <application_id>, <rest_api_key>[, master_key=None]
 register("HW8S7gMIafiQQszmJme2IS4Be7jFlRHnE0izdtLs", "D0lEeiwQ62X6POKXJ1RTxbHuDPX91aUvditAIjxC", master_key="fDtm8fpoHSxbeH3iUGaEexoRgsSdiBh2MvYGDjej")
-
+import json,httplib
+from flask import Flask, request, redirect, url_for, jsonify
 #File Handling
 import os
 from flask import Flask, request, redirect, url_for
@@ -37,5 +38,31 @@ def imagesRetrieve():
           imageDict[category].append(imageURL)
    return imageDict
 
-val = imagesRetrieve()
-print val['Tivicay']
+connection = httplib.HTTPSConnection('api.parse.com', 443) #Will need to be changed later to wherever we offload parse api
+connection.connect()
+file = open('test.bin', 'rb')
+connection.request('POST', '/1/files/test.bin', file.read(),
+                   {
+           "X-Parse-Application-Id": "HW8S7gMIafiQQszmJme2IS4Be7jFlRHnE0izdtLs",
+           "X-Parse-REST-API-Key": "D0lEeiwQ62X6POKXJ1RTxbHuDPX91aUvditAIjxC",
+           "Content-Type": "application/octet-stream"
+         })
+#results = json.loads(connection.getresponse().read())
+#print results
+res = connection.getresponse().read()
+res = str(res)
+res = ast.literal_eval(res)
+print res["name"]
+
+connection.request('POST', '/1/classes/ModelStorage', json.dumps({
+       "model": {
+         "name": res["name"],
+         "__type": "File"
+       }
+     }), {
+       "X-Parse-Application-Id": "HW8S7gMIafiQQszmJme2IS4Be7jFlRHnE0izdtLs",
+       "X-Parse-REST-API-Key": "D0lEeiwQ62X6POKXJ1RTxbHuDPX91aUvditAIjxC",
+       "Content-Type": "application/json"
+     })
+result = json.loads(connection.getresponse().read())
+print result
