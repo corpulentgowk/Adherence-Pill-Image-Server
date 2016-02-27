@@ -76,10 +76,7 @@ def hello_world():
 @app.route('/getImages')
 def getData():
     dic = imagesRetrieve()
-    # These results may look bad on browser, but by using telnet, it actually
-    # starts a new line.
-    #for key, value in dic.iteritems():
-     #   result = result + key + ":" + value + "\n"
+
     return jsonify(dic)
 
 
