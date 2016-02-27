@@ -12,43 +12,34 @@ UPLOAD_FOLDER = '/Users/Steven-PC/Desktop/'
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'bin'])
 
 
-
-
-
-
 #Parse handling
 from parse_rest.datatypes import Object
 
-#from PIL import Image
+from PIL import Image
 import urllib, cStringIO
 
-# def imagesRetrieve():
-#     class ImageStorageDev(Object):
-#         pass
-#
-#     #Get data from parse by objectId
-#     #dataRow = ImageStorageDev.Query.get(objectId="uqA3Ycyqnq")
-#
-#     imageDict = {}
-#     dataRows = ImageStorageDev.Query.filter(processed=False)
-#     for dataRow in dataRows:
-#         #Get data column (image) for that record
-#         image = dataRow.image
-#         #Get image URL
-#         imageURL = image.url
-#         imageDict[dataRow.objectId] = imageURL
-#     return imageDict
-#
-# def updateImages(result):
-#     class ImageStorageDev(Object):
-#         pass
-#     for key in result:
-#         dataRow = ImageStorageDev.Query.get(objectId=key)
-#         dataRow.processed=True
-#         print result[key]
-#         dataRow.pill = result[key]
-#         dataRow.save()
+def imagesRetrieve():
+   class ImageStorageDev(Object):
+       pass
 
+   #Get data from parse by objectId
+   #dataRow = ImageStorageDev.Query.get(objectId="uqA3Ycyqnq")
+
+   imageDict = {}
+   dataRows = ImageStorageDev.Query.filter(processed=False)
+   for dataRow in dataRows:
+       #Get data column (image) for that record
+       image = dataRow.image
+       imageList = []
+       #Get image URL
+       imageURL = image.url
+       category = dataRow.category
+       if category not in imageDict:
+           imageList.append(imageURL)
+           imageDict[category] = imageList
+       else:
+          imageDict[category].append(imageURL)
+   return imageDict
 
 #Get image (We don't actually need the file, URL should be enough)
 #Get image from image URL
