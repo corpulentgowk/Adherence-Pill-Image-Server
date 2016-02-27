@@ -94,9 +94,11 @@ def insertModel():
             name = request.files[filename].name
     file1 = request.files[name] #Grabs the file that was uploaded
 
+#### Uploads File to Parse ####
+
     connection = httplib.HTTPSConnection('api.parse.com', 443) #Will need to be changed later to wherever we offload parse api
     connection.connect()
-    connection.request('POST', '/1/files/test.bin', file1.read(),
+    connection.request('POST', '/1/files/' + name, file1.read(),
                    {
            "X-Parse-Application-Id": "HW8S7gMIafiQQszmJme2IS4Be7jFlRHnE0izdtLs",
            "X-Parse-REST-API-Key": "D0lEeiwQ62X6POKXJ1RTxbHuDPX91aUvditAIjxC",
@@ -107,6 +109,8 @@ def insertModel():
     res = str(res)
     res = ast.literal_eval(res) #converts the response into a JSON so we can index it by strings
     # res["name"] #Grab the link that parse stored in the files class so we can associate the file with ModelStorage
+
+#### Adds Recently Uploaded File to Parse to Class: Model Storage ####
 
     connection.request('POST', '/1/classes/ModelStorage', json.dumps({
        "model": {
