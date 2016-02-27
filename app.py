@@ -28,9 +28,11 @@ def imagesRetrieve():
 
    imageDict = {}
    dataRows = ImageStorageDev.Query.filter(processed=False)
+   #print dataRows
    for dataRow in dataRows:
        #Get data column (image) for that record
        image = dataRow.image
+       print type(image)
        imageList = []
        #Get image URL
        imageURL = image.url
@@ -71,7 +73,7 @@ def hello_world():
 #         return 'ObjectID: {0}, Pill: {1}'.format(objectID,pill)
 #     return 'Pill not found for ObjectID %s' % objectID
 
-@app.route('/getData')
+@app.route('/getImages')
 def getData():
     dic = imagesRetrieve()
     # These results may look bad on browser, but by using telnet, it actually
@@ -124,8 +126,23 @@ def insertModel():
      })
     result = json.loads(connection.getresponse().read())
     print result
-
     return "Successfully inserted model"
+
+@app.route('/getModels', methods=['GET'])
+def fetchModel():
+    class ModelStorage(Object):
+       pass
+
+    modelDict = {}
+    dataRows =  ModelStorage.Query.all()
+    for dataRow in dataRows:
+       #Get data column (file) for that record
+       model = dataRow.model
+       id = dataRow.objectId
+       modelDict[id] = model.url
+
+    return jsonify(modelDict)
+
 if __name__ == '__main__':
     #app.debug = True
     app.run(debug = 'True')
