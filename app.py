@@ -5,7 +5,7 @@ register("HW8S7gMIafiQQszmJme2IS4Be7jFlRHnE0izdtLs", "D0lEeiwQ62X6POKXJ1RTxbHuDP
 
 #File Handling
 import os
-from flask import Flask, request, redirect, url_for
+from flask import Flask, request, redirect, url_for, jsonify
 from werkzeug import secure_filename
 
 UPLOAD_FOLDER = '/Users/Steven-PC/Desktop/'
@@ -57,7 +57,7 @@ def hello_world():
     #picTag = '<img src="' + imageURL + '" alt="' + imageURL + '">'
     #print picTag
     #return "Hello World" + picTag
-    return "Hello World"
+    return "Welcome to The Adherence Pill Image Processing Server"
 
 #In the future, we may want to change this method to POST.
 # @app.route('/update/<objectID>')
@@ -70,15 +70,14 @@ def hello_world():
 #         return 'ObjectID: {0}, Pill: {1}'.format(objectID,pill)
 #     return 'Pill not found for ObjectID %s' % objectID
 
-# @app.route('/getData')
-# def getData():
-#     dic = imagesRetrieve()
-#     result = ""
-#     # These results may look bad on browser, but by using telnet, it actually
-#     # starts a new line.
-#     for key, value in dic.iteritems():
-#         result = result + key + ":" + value + "\n"
-#     return result
+@app.route('/getData')
+def getData():
+    dic = imagesRetrieve()
+    # These results may look bad on browser, but by using telnet, it actually
+    # starts a new line.
+    #for key, value in dic.iteritems():
+     #   result = result + key + ":" + value + "\n"
+    return jsonify(dic)
 
 
 #Sample Request

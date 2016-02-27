@@ -38,4 +38,4 @@ def imagesRetrieve():
    return imageDict
 
 val = imagesRetrieve()
-print val
+print val['Tivicay']
