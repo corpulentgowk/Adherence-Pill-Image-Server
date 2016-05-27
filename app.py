@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 from flask import Flask, request
 import ast
 from parse_rest.connection import register #Connects to the PArse Database. Format: <application_id>, <rest_api_key>[, master_key=None]
@@ -137,7 +137,6 @@ def fetchModel():
 
 if __name__ == '__main__':
     app.run(debug = 'True') #Runs API: Debug = True allows for automatic reload when changes are made to the file.
-=======
 from flask import Flask, request
 import ast
 from parse_rest.connection import register #Connects to the PArse Database. Format: <application_id>, <rest_api_key>[, master_key=None]
